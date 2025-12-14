@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Online Question Paper</title>
+
+<style>
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(135deg, #e3f2fd, #fce4ec);
+    margin: 0;
+    padding-bottom: 70px;
+}
+
+header {
+    background: linear-gradient(90deg, #0d47a1, #1976d2);
+    padding: 15px;
+    text-align: center;
+}
+
+header img {
+    height: 90px;
+}
+
+main {
+    max-width: 1000px;
+    margin: 30px auto;
+    text-align: center;
+}
+
+h2 {
+    color: #0d47a1;
+}
+
+button {
+    padding: 12px 30px;
+    font-size: 17px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(90deg, #43a047, #66bb6a);
+    color: white;
+    cursor: pointer;
+}
+
+button:disabled {
+    background: #9e9e9e;
+    cursor: not-allowed;
+}
+
+.question-box {
+    background: white;
+    margin-top: 25px;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    text-align: left;
+}
+
+.question {
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.either {
+    margin-left: 25px;
+    color: #555;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(90deg, #212121, #424242);
+    color: #eee;
+    text-align: center;
+    padding: 12px 0;
+}
+</style>
+</head>
+
+<body onload="checkAttempt()">
+
+<header>
+    <img src="logo1.png" alt="Saveetha Engineering College">
+</header>
+
+<main>
+    <h2>Online Question Paper</h2>
+    <button id="attemptBtn" onclick="generatePaper()">Attempt</button>
+    <div id="output" class="question-box"></div>
+</main>
+
+<footer>
+    Designed & Developed by <strong>Dr. R. Selvakumar</strong> © 2025
+</footer>
+
+<script>
+// ---------------- QUESTIONS ----------------
+
+// PART A
+const partA = {
+    unit1: [
+        "State the functions of the TCP/IP protocol.",
+        "Enumerate the major components of DNS.",
+        "For the IPv6 address find the prefix, subnet ID and Interface ID. 2001:0db8:85a3:6a70:0:0:0370:7334",
+        "State two ways HTTPS improves web security.",
+        "Why is SSH preferred for remote administration of servers?",
+        "Give any four examples for webserver."
+    ],
+    unit2: [
+        "What does makemigrations and migrate commands do in Django?",
+        "Mention the files responsible for Model-View-Template pattern in Django Web Framework.",
+        "What is the reason to choose popular web frameworks for web application development stack?",
+        "List the various features of SQLite.",
+        "How does Django ensure that the submitted CSRF token is valid?",
+        "Draw the typical project structure of a Django application developed for managing a student database."
+    ]
+};
+
+// PART B (Either / Or)
+const partB = {
+    unit1: [
+        [
+            "Describe the classification of IP addresses into various classes and highlight the key features of each.",
+            "Describe various types of networking devices used in computer networks, explaining their functions, differences, and how they contribute to efficient data communication."
+        ],
+        [
+            "Explain how web browsers and web servers communicate with each other to exchange information and load web pages.",
+            "Explain in detail about the layout of web application with the software components and define how the data is delivered through HTTP."
+        ],
+        [
+            "Explain the model that defines how data is transmitted over networks, ensuring reliable communication between devices.",
+            "Write short notes on the following: i. FTP (7) ii. Email (6)"
+        ]
+    ],
+    unit2: [
+        [
+            "(i) Create a model for an E-commerce website database like Amazon or Flipkart that records information for 20 products. Ensure the model includes at least seven relevant fields. (ii) Describe the various field types provided.",
+            "Design and develop a dynamic web application using server-side scripting that allows a user to input distance and fuel and calculate mileage."
+        ],
+        [
+            "Discuss any three web application frameworks.",
+            "Draw the steps involved in developing a web application and explain each."
+        ],
+        [
+            "Explain in detail the structure and organization of a Django project for a student database system.",
+            "List and explain all the steps involved in cloning a repository in Github and pushing contents using VS Code."
+        ]
+    ]
+};
+
+// PART C (Either / Or)
+const partC = {
+    unit1: [[
+        "Elaborate on the key challenges and risks associated with web security.",
+        "Explain the purpose of DNS and describe the various parts of the URL: https://www.saveetha.ac.in:80/search/?searchword=research&hl=en#projects"
+    ]],
+    unit2: [[
+        "Construct a Django model for Amazon with Product_ID as primary key and write steps to set up admin.",
+        "Explain in detail about various options in modelAdmin."
+    ]]
+};
+
+
+function shuffle(arr) {
+    return arr.sort(() => Math.random() - 0.5);
+}
+
+function checkAttempt() {
+    if (localStorage.getItem("attempted") === "yes") {
+        document.getElementById("attemptBtn").disabled = true;
+        document.getElementById("attemptBtn").innerText = "Attempted";
+        document.getElementById("output").innerHTML = localStorage.getItem("paper");
+    }
+}
+
+function generatePaper() {
+    localStorage.setItem("attempted", "yes");
+
+    const btn = document.getElementById("attemptBtn");
+    btn.disabled = true;
+    btn.innerText = "Attempted";
+
+    let out = "";
+    let qno = 1;
+
+    shuffle([...partA.unit1]).slice(0,3).forEach(q => {
+        out += `<div class="question">${qno++}. ${q}</div>`;
+    });
+
+    shuffle([...partA.unit2]).slice(0,2).forEach(q => {
+        out += `<div class="question">${qno++}. ${q}</div>`;
+    });
+
+    let b1 = shuffle([...partB.unit1])[0];
+    out += `<div class="question">${qno++}.
+        <div class="either">a) ${b1[0]}</div>
+        <div class="either">OR</div>
+        <div class="either">b) ${b1[1]}</div>
+    </div>`;
+
+    let b2 = shuffle([...partB.unit2])[0];
+    out += `<div class="question">${qno++}.
+        <div class="either">a) ${b2[0]}</div>
+        <div class="either">OR</div>
+        <div class="either">b) ${b2[1]}</div>
+    </div>`;
+
+    let unit = Math.random() < 0.5 ? "unit1" : "unit2";
+    let c = partC[unit][0];
+    out += `<div class="question">${qno++}.
+        <div class="either">a) ${c[0]}</div>
+        <div class="either">OR</div>
+        <div class="either">b) ${c[1]}</div>
+    </div>`;
+
+    document.getElementById("output").innerHTML = out;
+    localStorage.setItem("paper", out);
+}
+</script>
+
+</body>
+</html>
